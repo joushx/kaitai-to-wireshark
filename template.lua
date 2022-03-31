@@ -41,6 +41,3 @@ function modes_proto.dissector(buffer,pinfo,tree)
   {% endfor %}
   {% endfor %}
 end
-
-tcp_table = DissectorTable.get("tcp.port")
-tcp_table:add(<port>, {{data.meta.id}}_proto)
