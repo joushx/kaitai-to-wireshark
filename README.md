@@ -1,7 +1,7 @@
 # kaitai-to-wireshark
 Converts a [Kaitai Struct](https://github.com/kaitai-io/kaitai_struct) binary file description to a Wireshark LUA dissector.
 
-##Usage##
+## Usage
 
 ``./convert.py description.ksy > plugin.lua``
 
@@ -9,7 +9,7 @@ Please note that the result is not a finished wireshark plugin but rather a prot
 
 Please replace `<port>` with the port to register the dissector for.
 
-##Example##
+## Example
 
 A Kaitai Struct file:
 
@@ -83,6 +83,6 @@ tcp_table = DissectorTable.get("tcp.port")
 tcp_table:add(<port>, gif_proto)
 ```
 
-##Limitations##
+## Limitations
 
 Currently the script is just a proof-of-concept, very hacky and only converts a few basic data types: `u1`, `u2`, `u3`, fields with `contents` and fields with `size`. It is basically a template that gets filled with data.
