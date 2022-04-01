@@ -1,34 +1,56 @@
-gif_proto = Proto("gif","gif file")
+local gif_proto = Proto("gif", "Gif")
 
-local f = gif_proto.fields
+-- field definition
+local f_header_magic = ProtoField.bytes("gif.magic", "Magic")
+local f_header_version = ProtoField.bytes("gif.version", "Version")
+local f_logical_screen_image_width = ProtoField.uint16("gif.image_width", "Image width")
+local f_logical_screen_image_height = ProtoField.uint16("gif.image_height", "Image height")
+local f_logical_screen_flags = ProtoField.uint8("gif.flags", "Flags")
+local f_logical_screen_bg_color_index = ProtoField.uint8("gif.bg_color_index", "Bg color index")
+local f_logical_screen_pixel_aspect_ratio = ProtoField.uint8("gif.pixel_aspect_ratio", "Pixel aspect ratio")
 
--- field declaration
-f.header = ProtoField.bytes("gif.header", "header")
-f.logical_screen = ProtoField.bytes("gif.logical_screen", "logical_screen")
-f.magic = ProtoField.bytes("gif.header.magic", "magic")
-f.version = ProtoField.bytes("gif.header.version", "version")
-f.image_width = ProtoField.bytes("gif.logical_screen.image_width", "image_width")
-f.image_height = ProtoField.bytes("gif.logical_screen.image_height", "image_height")
-f.flags = ProtoField.bytes("gif.logical_screen.flags", "flags")
-f.bg_color_index = ProtoField.bytes("gif.logical_screen.bg_color_index", "bg_color_index")
-f.pixel_aspect_ratio = ProtoField.bytes("gif.logical_screen.pixel_aspect_ratio", "pixel_aspect_ratio")
+-- field registration
+gif_proto.fields = {}
+table.insert(gif_proto.fields, f_header_magic)
+table.insert(gif_proto.fields, f_header_version)
+table.insert(gif_proto.fields, f_logical_screen_image_width)
+table.insert(gif_proto.fields, f_logical_screen_image_height)
+table.insert(gif_proto.fields, f_logical_screen_flags)
+table.insert(gif_proto.fields, f_logical_screen_bg_color_index)
+table.insert(gif_proto.fields, f_logical_screen_pixel_aspect_ratio)
 
 -- main function
-function modes_proto.dissector(buffer,pinfo,tree)
-  pinfo.cols.protocol = "gif"
+function gif_proto.dissector(tvb, pinfo, root)
+  pinfo.cols.protocol = "Gif"
+  local tree = root:add(gif_proto, "Gif")
+  local offset = 0
 
-  main = tree:add(gif_proto, "gif file")
-
-  local header = main:add(f.header,"header")
-  header:add(buffer(0,3), f.magic)
-  header:add(buffer(3,3), f.version)
-  local logical_screen = main:add(f.logical_screen,"logical_screen")
-  logical_screen:add(buffer(0,2), f.image_width)
-  logical_screen:add(buffer(2,2), f.image_height)
-  logical_screen:add(buffer(4,1), f.flags)
-  logical_screen:add(buffer(5,1), f.bg_color_index)
-  logical_screen:add(buffer(6,1), f.pixel_aspect_ratio)
+  local header = tree:add("header", tvb(offset, 6))
+  dissect_header(tvb, pinfo, header)
+  local logical_screen = tree:add("logical_screen", tvb(offset, 7))
+  dissect_logical_screen(tvb, pinfo, logical_screen)
 end
 
-tcp_table = DissectorTable.get("tcp.port")
-tcp_table:add(<port>, gif_proto)
+function dissect_header(tvb, pinfo, tree)
+  local offset = 0
+
+  local magic = tree:add("magic", tvb(offset, 3))
+  dissect_magic(tvb, pinfo, magic)
+  local version = tree:add("version", tvb(offset, 3))
+  dissect_version(tvb, pinfo, version)
+end
+
+function dissect_logical_screen(tvb, pinfo, tree)
+  local offset = 0
+
+  tree:add(f_image_width, tvb(offset, 2))
+  offset = offset + 1
+  tree:add(f_image_height, tvb(offset, 2))
+  offset = offset + 1
+  tree:add(f_flags, tvb(offset, 1))
+  offset = offset + 1
+  tree:add(f_bg_color_index, tvb(offset, 1))
+  offset = offset + 1
+  tree:add(f_pixel_aspect_ratio, tvb(offset, 1))
+  offset = offset + 1
+end

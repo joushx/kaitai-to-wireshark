@@ -1,0 +1,10 @@
+-- field definitions
+{% for field in d.fields.primitive %}
+local {{ field.variable }} = ProtoField.{{ field.wireshark_type }}("{{ d.names.proto }}.{{ field.id }}", "{{ field.id }}")
+{% endfor %}
+
+-- field registration
+{{ d.names.proto }}.fields = {}
+{% for field in d.fields.primitive %}
+table.insert({{ d.names.proto }}.fields, {{ field.variable }})
+{% endfor %}

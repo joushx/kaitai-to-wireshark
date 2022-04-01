@@ -1,26 +1,20 @@
 #!/usr/bin/env python3
 
-from yaml import load, dump
-from jinja2 import Template
+from jinja2 import Environment, FileSystemLoader
 import sys
+import json
+from parse.kaitai_parser import KaitaiParser
+from transpile.kaitai_wireshark_transpiler import KaitaiToWiresharkTranspiler
+from generate.wireshark_generator import WiresharkGenerator
 
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
+if __name__ == "__main__":
+    parser = KaitaiParser(sys.argv[1])
+    definition = parser.parse()
+    
+    transpiler = KaitaiToWiresharkTranspiler(definition)
+    transpiler.process()
 
-# load definition file into string
-definition_file = sys.argv[1]
-definition = open(definition_file).read()
+    generator = WiresharkGenerator(transpiler.result)
+    result = generator.generate()
 
-# parse definition yaml
-ksy = load(definition, Loader=Loader)
-
-# read template
-template = open("templates/template.lua").read()
-
-# generate output
-template = Template(template,trim_blocks=True,lstrip_blocks=True)
-
-# print result
-print(template.render(data=ksy))
+    print(result)

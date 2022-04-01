@@ -1,0 +1,19 @@
+local {{ d.names.proto }} = Proto("{{ d.names.dissector_id }}", "{{ d.names.dissector_name }}")
+
+{% include 'fields.j2' %}
+
+-- main function
+function {{ d.names.proto }}.dissector(tvb, pinfo, root)
+  pinfo.cols.protocol = "{{ d.names.dissector_name }}"
+  local tree = root:add({{ d.names.proto }}, "{{ d.names.dissector_name }}")
+  local offset = 0
+
+  {% for field in d.fields.root %}
+  -- TODO what if not complex?
+  local {{ field.id }}_tree = tree:add("{{ field.id }}", tvb(offset))
+  -- TODO path
+  dissect_{{ field.type }}(tvb(offset), pinfo, {{ field.id }}_tree)
+  {% endfor %}
+end
+
+{% include 'dissect_functions.j2' %}
