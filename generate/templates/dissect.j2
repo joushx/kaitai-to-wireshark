@@ -1,4 +1,9 @@
+  -- size: {{ field.size }}
+  {% if field.primitive %}
+  tree:{{ d.settings.add}}({{ field.variable }}, tvb(offset, {{ field.size }}))
+  offset = offset + {{ field.size }}
+  {% else %}
   local {{ field.id }}_tree = tree:add("{{ field.title }}", tvb(offset))
   local {{ field.id }}_size = {{ field.function }}(tvb(offset), pinfo, {{ field.id }}_tree)
   offset = offset + {{ field.id }}_size
-  
+  {% endif %}

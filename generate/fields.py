@@ -1,4 +1,6 @@
 def collect_sequence_fields(data: dict) -> []:
+    if "seq" not in data:
+        return []
     return list(map(lambda item: {"id": item["id"], "type": item["type"] if "type" in item else None, "size": item["size"] if "size" in item else None, "path": []}, data["seq"]))
 
 def collect_type_fields(data: dict, type_name: str) -> []:

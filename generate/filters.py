@@ -48,6 +48,8 @@ def wireshark_type(value):
         return "uint8"
     elif value == "u2":
         return "uint16"
+    elif value == "u4":
+        return "uint32"
     else:
         return "bytes"
 
@@ -72,5 +74,7 @@ def size(value, size=None):
         return 1
     elif value == "u2":
         return 2
+    elif value == "u4":
+        return 4
     else:
         return -1

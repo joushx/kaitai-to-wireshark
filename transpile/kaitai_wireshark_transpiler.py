@@ -12,6 +12,7 @@ class KaitaiToWiresharkTranspiler:
         self._generate_fields()
         self._add_sizes()
         self._add_variable_names()
+        self._add_filter_names()
         self._add_function_names()
         self._add_data_types()
         self._add_settings()
@@ -29,11 +30,12 @@ class KaitaiToWiresharkTranspiler:
 
         for field in fields:
             field["title"] = for_human(field["id"])
+            field["primitive"] = is_primitive(field)
 
         self.result["fields"] = {}
-        self.result["fields"]["primitive"] = list(filter(lambda item: is_primitive(item), fields))
-        self.result["fields"]["complex"] = list(filter(lambda item: not is_primitive(item), fields))
-        self.result["fields"]["root"] = list(filter(lambda item: len(item["path"]) == 0, fields)) # TODO add info whether root items are primitive or not
+        self.result["fields"]["primitive"] = list(filter(lambda item: item["primitive"], fields))
+        self.result["fields"]["complex"] = list(filter(lambda item: not item["primitive"], fields))
+        self.result["fields"]["root"] = list(filter(lambda item: len(item["path"]) == 0, fields))
         self.result["fields"]["type"] = self._group_by_path(fields)
 
     def _add_sizes(self):
@@ -51,13 +53,22 @@ class KaitaiToWiresharkTranspiler:
             variable = "f_" + path + field["id"]
             self.result["fields"]["primitive"][i]["variable"] = variable
 
+    def _add_filter_names(self):
+        for i in range(len(self.result["fields"]["primitive"])):
+            field = self.result["fields"]["primitive"][i]
+            path = ".".join(field["path"])
+            if len(path) > 0:
+                path = path + "."
+            filter = self.result["names"]["dissector_id"] + "." + path + field["id"]
+            self.result["fields"]["primitive"][i]["filter"] = filter
+
     def _add_function_names(self):
         for i in range(len(self.result["fields"]["complex"])):
             field = self.result["fields"]["complex"][i]
             path = "_".join(field["path"])
             if len(path) > 0:
                 path = path + "_"
-            function_name = "dissect_" + path + field["id"]
+            function_name = "dissect_" + path + field["type"]
             self.result["fields"]["complex"][i]["function"] = function_name
 
     def _add_data_types(self):
@@ -84,4 +95,4 @@ class KaitaiToWiresharkTranspiler:
 
     def _add_settings(self):
         self.result["settings"] = {}
-        self.result["settings"]["add"] = "add" if self.definition["meta"]["endian"] == "be" else "add_le"
+        self.result["settings"]["add"] = "add_le" if ("endian" in self.definition["meta"] and self.definition["meta"]["endian"] == "le") else "add"

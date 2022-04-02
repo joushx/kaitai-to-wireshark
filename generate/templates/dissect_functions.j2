@@ -2,9 +2,8 @@
 function {{ complexfield.function }}(tvb, pinfo, tree)
   local offset = 0
 
-  {% for field in d.fields.type[complexfield.id] %}
-  tree:{{ d.settings.add}}({{ field.variable }}, tvb(offset, {{ field.size }}))
-  offset = offset + {{ field.size }}
+  {% for field in d.fields.type[complexfield.type] %}
+  {% include 'dissect.j2' %}
   {% endfor %}
 
   return offset

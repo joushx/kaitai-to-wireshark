@@ -12,6 +12,8 @@ class FieldExtractor:
                 "path": []
             }
 
+        if "seq" not in self.definition:
+            return []
         return list(map(build_field, self.definition["seq"]
         ))
 
@@ -28,6 +30,8 @@ class FieldExtractor:
 
     def _collect_types_fields(self) -> []:
         fields = []
+        if "types" not in self.definition:
+            return []
         for type_name in self.definition["types"]:
             fields.extend(self._collect_type_fields(type_name))
         return fields
