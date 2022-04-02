@@ -38,5 +38,7 @@ Converts a [Kaitai Struct](https://github.com/kaitai-io/kaitai_struct) binary fi
 | size    | ✓      |         |
 | types   | ✓      |         |
 | contents | ✓     |         |
-| instances | ✗    |         |
+| instances | ✓    |         |
 | doc     | ✗      |         |
+| Defaul endianess | ✓ |     |
+| repeat |  ✗      |         |

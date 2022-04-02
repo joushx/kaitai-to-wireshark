@@ -36,8 +36,25 @@ class FieldExtractor:
             fields.extend(self._collect_type_fields(type_name))
         return fields
 
+    def _collect_instance_fields(self) -> []:
+        fields = []
+        if "instances" not in self.definition:
+            return []
+        for instance_name in self.definition["instances"]:
+            instance = self.definition["instances"][instance_name]
+            fields.append({
+                "id": instance_name, 
+                "type": instance["type"] if "type" in instance else None, 
+                "size": instance["size"] if "size" in instance else None,
+                "contents": instance["contents"] if "contents" in instance else None,
+                "pos": instance["pos"] if "pos" in instance else None,
+                "path": []
+            })
+        return fields
+
     def extract(self) -> []:
         result = self._collect_sequence_fields()
         result.extend(self._collect_types_fields())
+        result.extend(self._collect_instance_fields())
 
         return result
