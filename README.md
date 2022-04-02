@@ -38,7 +38,7 @@ Converts a [Kaitai Struct](https://github.com/kaitai-io/kaitai_struct) binary fi
 
 | Feature | Status | Comment |
 |---------|--------|---------|
-| size    | ✓      | Only static values (no references) |
+| size    | ✓      | Static values and simple references to "local" fields |
 | types   | ✓      |         |
 | contents | ✓     | No check if equal |
 | instances | ✓    |         |

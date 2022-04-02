@@ -1,5 +1,5 @@
 from utils.names import for_human
-from utils.types import is_primitive, calculate_size, get_wireshark_type, get_add_fn
+from utils.types import is_primitive, calculate_size, get_wireshark_type, get_add_fn, get_value_fn
 from transpile.field_extractor import FieldExtractor
 
 class KaitaiToWiresharkTranspiler:
@@ -77,6 +77,7 @@ class KaitaiToWiresharkTranspiler:
             data_type = get_wireshark_type(field["type"])
             self.result["fields"]["primitive"][i]["wireshark_type"] = data_type
             self.result["fields"]["primitive"][i]["add_fn"] = get_add_fn(data_type, self.definition["meta"]["endian"] if "endian" in self.definition["meta"] else None)
+            self.result["fields"]["primitive"][i]["value_fn"] = get_value_fn(field["type"], self.definition["meta"]["endian"] if "endian" in self.definition["meta"] else None)
 
     def _group_by_path(self, fields):
         groups = {}

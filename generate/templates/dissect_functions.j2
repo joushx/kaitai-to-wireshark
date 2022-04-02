@@ -1,6 +1,7 @@
 {% for complexfield in d.fields.complex %}
 function {{ complexfield.function }}(tvb, pinfo, tree)
   local offset = 0
+  local values = {}
 
   {% for field in d.fields.type[complexfield.type] %}
   {% include 'dissect.j2' %}

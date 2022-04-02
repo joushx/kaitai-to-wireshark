@@ -65,7 +65,11 @@ def get_add_fn(type, default_endianess):
 
 def calculate_size(field):
     if "size" in field and field["size"] != None:
-        return field["size"]
+        if type(field["size"]) == int:
+            return field["size"]
+        else:
+            return "values[\"" + field["size"] + "\"]"
+    
 
     if "contents" in field and field["contents"] != None:
         return len(field["contents"])
@@ -73,15 +77,29 @@ def calculate_size(field):
     if field["type"] is None and "value" in field and field["value"] != None:
         return 0 #  TODO implement value calculation in lua
 
-    type = field["type"]
-    if type == "u1" or type == "s1":
+    t = field["type"]
+    if t == "u1" or t == "s1":
         return 1
-    elif type == "u2" or type == "u2le" or type == "u2be" or type == "s2" or type == "s2le" or type == "s2be":
+    elif t == "u2" or t == "u2le" or t == "u2be" or t == "s2" or t == "s2le" or t == "s2be":
         return 2
-    elif type == "u4" or type == "u4le" or type == "u4be" or type == "s4" or type == "s4le" or type == "s4be":
+    elif t == "u4" or t == "u4le" or t == "u4be" or t == "s4" or t == "s4le" or t == "s4be":
         return 4
-    elif type == "u8" or type == "u8le" or type == "u8be" or type == "s8" or type == "s8le" or type == "s8be":
+    elif t == "u8" or t == "u8le" or t == "u8be" or t == "s8" or t == "s8le" or t == "s8be":
         return 8
     else:
         print("Unknown size: " + str(type))
         return None
+
+def get_value_fn(type, default_endianess):
+    # TODO does not cover all cases
+
+    if type == "str":
+        return ":string()"
+    elif (default_endianess == "be" or default_endianess is None) and (type == "u1" or type == "u2" or type == "u4"):
+        return ":uint()"
+    elif type == "u1be" or type == "u2be" or type == "u2be":
+        return ":uint()"
+    elif type == "u8be":
+        return ":uint64()"
+    else:
+        return ":tohex()"
