@@ -33,8 +33,9 @@ def is_primitive(field):
     if "contents" in field and field["contents"] != None:
         return True
 
-    if field["type"] == "u8":
-        print("!!!")
+    if field["type"] is None and field["value"] != None:
+        return True
+
     return False
 
 def get_wireshark_type(value):
@@ -63,11 +64,14 @@ def get_add_fn(type, default_endianess):
         return "add"
 
 def calculate_size(field):
-    if "size" in field  and field["size"] != None:
+    if "size" in field and field["size"] != None:
         return field["size"]
 
     if "contents" in field and field["contents"] != None:
         return len(field["contents"])
+
+    if field["type"] is None and "value" in field and field["value"] != None:
+        return 0 #  TODO implement value calculation in lua
 
     type = field["type"]
     if type == "u1" or type == "s1":

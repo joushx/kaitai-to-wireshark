@@ -48,6 +48,7 @@ class FieldExtractor:
                 "size": instance["size"] if "size" in instance else None,
                 "contents": instance["contents"] if "contents" in instance else None,
                 "pos": instance["pos"] if "pos" in instance else None,
+                "value": instance["value"] if "value" in instance else None,
                 "path": []
             })
         return fields
