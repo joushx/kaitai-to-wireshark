@@ -44,11 +44,11 @@ Converts a [Kaitai Struct](https://github.com/kaitai-io/kaitai_struct) binary fi
 | instances | ✓    |         |
 | value   | ✗      |         | 
 | doc     | ✗      |         |
-| Defaul endianess | ✓ |     |
-| repeat |  ✗      |         |
+| endian  | ✓      |     |
+| repeat  |  ✗     |         |
 | encoding | ✗     |         |
 | size-eos | ✗     |         |
 | terminator | ✗   |         |
-| enums    | ✗     |         |
-| if       | ✗     |         |
-| switch   | ✗     |         |
+| enums   | ✗      |         |
+| if      | ✗      |         |
+| switch  | ✗      |         |
