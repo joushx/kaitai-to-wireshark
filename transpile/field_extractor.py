@@ -7,7 +7,8 @@ class FieldExtractor:
             return {
                 "id": item["id"], 
                 "type": item["type"] if "type" in item else None, 
-                "size": item["size"] if "size" in item else None, 
+                "size": item["size"] if "size" in item else None,
+                "contents": item["contents"] if "contents" in item else None, 
                 "path": []
             }
 
@@ -19,7 +20,8 @@ class FieldExtractor:
             return {
                 "id": item["id"], 
                 "type": item["type"] if "type" in item else None, 
-                "size": item["size"] if "size" in item else None, 
+                "size": item["size"] if "size" in item else None,
+                "contents": item["contents"] if "contents" in item else None,
                 "path": [type_name]
             }
         return list(map(build_field, self.definition["types"][type_name]["seq"]))

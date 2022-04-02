@@ -12,7 +12,9 @@ class KaitaiToWiresharkTranspiler:
         self._generate_fields()
         self._add_sizes()
         self._add_variable_names()
+        self._add_function_names()
         self._add_data_types()
+        self._add_settings()
 
     def _generate_names(self):
         self.result["names"] = {
@@ -25,10 +27,14 @@ class KaitaiToWiresharkTranspiler:
     def _generate_fields(self):
         fields = FieldExtractor(self.definition).extract()
 
+        for field in fields:
+            field["title"] = for_human(field["id"])
+
         self.result["fields"] = {}
         self.result["fields"]["primitive"] = list(filter(lambda item: is_primitive(item), fields))
         self.result["fields"]["complex"] = list(filter(lambda item: not is_primitive(item), fields))
-        self.result["fields"]["root"] = list(filter(lambda item: len(item["path"]) == 0, fields)) # TODO add info if root items are primitive or not
+        self.result["fields"]["root"] = list(filter(lambda item: len(item["path"]) == 0, fields)) # TODO add info whether root items are primitive or not
+        self.result["fields"]["type"] = self._group_by_path(fields)
 
     def _add_sizes(self):
         for i in range(len(self.result["fields"]["primitive"])):
@@ -45,8 +51,37 @@ class KaitaiToWiresharkTranspiler:
             variable = "f_" + path + field["id"]
             self.result["fields"]["primitive"][i]["variable"] = variable
 
+    def _add_function_names(self):
+        for i in range(len(self.result["fields"]["complex"])):
+            field = self.result["fields"]["complex"][i]
+            path = "_".join(field["path"])
+            if len(path) > 0:
+                path = path + "_"
+            function_name = "dissect_" + path + field["id"]
+            self.result["fields"]["complex"][i]["function"] = function_name
+
     def _add_data_types(self):
         for i in range(len(self.result["fields"]["primitive"])):
             field = self.result["fields"]["primitive"][i]
             data_type = get_wireshark_type(field["type"])
             self.result["fields"]["primitive"][i]["wireshark_type"] = data_type
+
+    def _group_by_path(self, fields):
+        groups = {}
+
+        for field in fields:
+
+            # no root fields
+            if len(field["path"]) == 0:
+                continue
+
+            if field["path"][0] not in groups:
+                groups[field["path"][0]] = []
+
+            groups[field["path"][0]].append(field)
+
+        return groups
+
+    def _add_settings(self):
+        self.result["settings"] = {}
+        self.result["settings"]["add"] = "add" if self.definition["meta"]["endian"] == "be" else "add_le"

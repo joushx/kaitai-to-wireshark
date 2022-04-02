@@ -7,6 +7,9 @@ def is_primitive(field):
     if field["type"] is None and field["size"] != None:
         return True
 
+    if "contents" in field and field["contents"] != None:
+        return True
+
     return False
 
 def get_wireshark_type(value):

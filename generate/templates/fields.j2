@@ -1,6 +1,6 @@
 -- field definitions
 {% for field in d.fields.primitive %}
-local {{ field.variable }} = ProtoField.{{ field.wireshark_type }}("{{ d.names.proto }}.{{ field.id }}", "{{ field.id }}")
+local {{ field.variable }} = ProtoField.{{ field.wireshark_type }}("{{ d.names.proto }}.{{ field.id }}", "{{ field.title }}")
 {% endfor %}
 
 -- field registration
