@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-from jinja2 import Environment, FileSystemLoader
 import sys
-import json
 from parse.kaitai_parser import KaitaiParser
 from transpile.kaitai_wireshark_transpiler import KaitaiToWiresharkTranspiler
 from generate.wireshark_generator import WiresharkGenerator
