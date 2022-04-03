@@ -102,4 +102,4 @@ def get_value_fn(type, default_endianess):
     elif type == "u8be":
         return ":uint64()"
     else:
-        return ":tohex()"
+        return ":bytes():tohex()"
