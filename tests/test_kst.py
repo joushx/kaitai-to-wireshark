@@ -38,6 +38,8 @@ def test_output(definition):
     else:
         result = dict[0]["_source"]["layers"][definition["id"]]
     
+    if "asserts" not in definition:
+        return
 
     # Wireshark uses "types.value" (e.g. header.width) for fields,
     # Kaitai uses "instance.value" (e.g. header_one.width). Thus, we cannot compare the fields
