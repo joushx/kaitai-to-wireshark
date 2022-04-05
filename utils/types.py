@@ -101,5 +101,7 @@ def get_value_fn(type, default_endianess):
         return ":uint()"
     elif type == "u8be":
         return ":uint64()"
+    elif default_endianess == "le" and (type == "u1" or type == "u2" or type == "u4"):
+        return ":le_uint()"
     else:
         return ":bytes():tohex()"
