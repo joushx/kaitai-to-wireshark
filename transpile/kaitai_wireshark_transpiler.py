@@ -3,6 +3,9 @@ from utils.types import is_primitive, calculate_size, get_wireshark_type, get_ad
 from transpile.field_extractor import FieldExtractor
 
 class KaitaiToWiresharkTranspiler:
+    """
+    Generate immediate representation from the input
+    """
     def __init__(self, definition):
         self.definition = definition
         self.result = {}
@@ -59,8 +62,8 @@ class KaitaiToWiresharkTranspiler:
             path = ".".join(field["path"])
             if len(path) > 0:
                 path = path + "."
-            filter = self.result["names"]["dissector_id"] + "." + path + field["id"]
-            self.result["fields"]["primitive"][i]["filter"] = filter
+            filter_value = self.result["names"]["dissector_id"] + "." + path + field["id"]
+            self.result["fields"]["primitive"][i]["filter"] = filter_value
 
     def _add_function_names(self):
         for i in range(len(self.result["fields"]["complex"])):
