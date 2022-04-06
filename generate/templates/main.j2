@@ -5,7 +5,7 @@ local {{ d.names.proto }} = Proto("{{ d.names.dissector_id }}", "{{ d.names.diss
 -- main function
 function {{ d.names.proto }}.dissector(tvb, pinfo, root)
   pinfo.cols.protocol = "{{ d.names.dissector_name }}"
-  local tree = root:add({{ d.names.proto }}, "{{ d.names.dissector_name }}")
+  local tree = root:add({{ d.names.proto }}, tvb(), "{{ d.names.dissector_name }}")
   local offset = 0
   local values = {}
 
