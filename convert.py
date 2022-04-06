@@ -8,6 +8,7 @@ from generate.wireshark_generator import WiresharkGenerator
 if __name__ == "__main__":
     parser = KaitaiParser(sys.argv[1])
     definition = parser.parse()
+    
     transpiler = KaitaiToWiresharkTranspiler(definition)
     transpiler.process()
 

@@ -58,7 +58,6 @@ def get_conditional(field):
     return if_field,if_operator,if_value
 
 def get_wireshark_type(value):
-
     if value in TYPES:
         return TYPES[value]
     elif value == None:
@@ -87,6 +86,7 @@ def calculate_size(field):
             return field["size"]
         else:
             return "values[\"" + field["size"] + "\"]"
+
 
     if "contents" in field and field["contents"] != None:
         return len(field["contents"])
