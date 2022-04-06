@@ -1,4 +1,8 @@
+  {% if field.if %}
+  if values["{{ field.if_field }}"] {{field.if_operator}} "{{field.if_value}}" then
+  {% endif %}
   {% if field.primitive %}
+
   tree:{{ field.add_fn }}({{ field.variable }}, tvb({% if field.pos %}{{ field.pos }}{% else %}offset{% endif %}, {{ field.size }}))
   values["{{ field.id }}"] = tvb(offset, {{ field.size }}){{ field.value_fn }}
   offset = offset + {{ field.size }}
@@ -6,4 +10,7 @@
   local {{ field.id }}_tree = tree:add("{{ field.title }}", tvb(offset))
   local {{ field.id }}_size = {{ field.function }}(tvb(offset), pinfo, {{ field.id }}_tree)
   offset = offset + {{ field.id }}_size
+  {% endif %}
+  {% if field.if %}
+  end
   {% endif %}

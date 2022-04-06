@@ -1,5 +1,5 @@
 from utils.names import for_human
-from utils.types import is_primitive, calculate_size, get_wireshark_type, get_add_fn, get_value_fn
+from utils.types import is_primitive, get_conditional, calculate_size, get_wireshark_type, get_add_fn, get_value_fn
 from transpile.field_extractor import FieldExtractor
 
 class KaitaiToWiresharkTranspiler:
@@ -31,6 +31,11 @@ class KaitaiToWiresharkTranspiler:
         for field in fields:
             field["title"] = for_human(field["id"])
             field["primitive"] = is_primitive(field)
+            if field["if"]:
+                (field["if_field"], field["if_operator"], field["if_value"]) = get_conditional(field["if"])
+                field["if"] = True
+            else:
+                field["if"] = False
 
         self.result["fields"] = {}
         self.result["fields"]["primitive"] = list(filter(lambda item: item["primitive"], fields))
