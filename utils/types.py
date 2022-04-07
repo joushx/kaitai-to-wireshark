@@ -1,4 +1,4 @@
-PRIMITIVES = ["u1", "u2", "u2be", "u2le", "u4", "u4be", "u4le", "u8", "u8be", "u8le", "s1", "s2", "s2le", "s2be", "s4", "s4be", "s4le", "s8", "s8le", "s8be", "str"]
+PRIMITIVES = ["u1", "u2", "u2be", "u2le", "u4", "u4be", "u4le", "u8", "u8be", "u8le", "s1", "s2", "s2le", "s2be", "s4", "s4be", "s4le", "s8", "s8le", "s8be", "str", "strz"]
 TYPES = {
     "u1": "uint8",
     "u2": "uint16",
@@ -20,7 +20,8 @@ TYPES = {
     "s8": "int64",
     "s8le": "int64",
     "s8be": "int64",
-    "str": "string"
+    "str": "string",
+    "strz": "stringz"
 }
 
 def is_primitive(field):
@@ -118,5 +119,7 @@ def get_value_fn(type, default_endianess):
         return ":uint()"
     elif type == "u8be":
         return ":uint64()"
+    elif default_endianess == "le" and (type == "u1" or type == "u2" or type == "u4"):
+        return ":le_uint()"
     else:
         return ":bytes():tohex()"

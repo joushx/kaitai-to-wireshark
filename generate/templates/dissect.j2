@@ -7,8 +7,9 @@
   values["{{ field.id }}"] = tvb(offset, {{ field.size }}){{ field.value_fn }}
   offset = offset + {{ field.size }}
   {% else %}
-  local {{ field.id }}_tree = tree:add("{{ field.title }}", tvb(offset))
+  local {{ field.id }}_tree = tree:add(tvb(offset, 0), "{{ field.title }}")
   local {{ field.id }}_size = {{ field.function }}(tvb(offset), pinfo, {{ field.id }}_tree)
+  {{ field.id }}_tree:set_len({{ field.id }}_size)
   offset = offset + {{ field.id }}_size
   {% endif %}
   {% if field.if %}

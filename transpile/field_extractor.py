@@ -1,29 +1,31 @@
 class FieldExtractor:
+    """
+    Finds field in input and extracts information from them
+    """
     def __init__(self, definition):
         self.definition = definition
 
     def _collect_sequence_fields(self) -> []:
         def build_field(item):
             return {
-                "id": item["id"], 
-                "type": item["type"] if "type" in item else None, 
+                "id": item["id"],
+                "type": item["type"] if "type" in item else None,
                 "size": item["size"] if "size" in item else None,
                 "if": item["if"] if "if" in item else None,
-                "contents": item["contents"] if "contents" in item else None, 
+                "contents": item["contents"] if "contents" in item else None,
                 "path": []
             }
 
         if "seq" not in self.definition:
             return []
-        return list(map(build_field, self.definition["seq"]
-        ))
+        return list(map(build_field, self.definition["seq"]))
 
     # {'id': 'body', 'type': 'body', 'if': 'msg_type == [0x19, 0x0b]'}]
     def _collect_type_fields(self, type_name: str) -> []:
         def build_field(item):
             return {
-                "id": item["id"], 
-                "type": item["type"] if "type" in item else None, 
+                "id": item["id"],
+                "type": item["type"] if "type" in item else None,
                 "size": item["size"] if "size" in item else None,
                 "contents": item["contents"] if "contents" in item else None,
                 "if": item["if"] if "if" in item else None,
@@ -46,8 +48,8 @@ class FieldExtractor:
         for instance_name in self.definition["instances"]:
             instance = self.definition["instances"][instance_name]
             fields.append({
-                "id": instance_name, 
-                "type": instance["type"] if "type" in instance else None, 
+                "id": instance_name,
+                "type": instance["type"] if "type" in instance else None,
                 "size": instance["size"] if "size" in instance else None,
                 "contents": instance["contents"] if "contents" in instance else None,
                 "pos": instance["pos"] if "pos" in instance else None,
