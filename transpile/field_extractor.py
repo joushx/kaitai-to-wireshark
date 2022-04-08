@@ -11,6 +11,7 @@ class FieldExtractor:
                 "id": item["id"],
                 "type": item["type"] if "type" in item else None,
                 "size": item["size"] if "size" in item else None,
+                "if": item["if"] if "if" in item else None,
                 "contents": item["contents"] if "contents" in item else None,
                 "path": []
             }
@@ -19,6 +20,7 @@ class FieldExtractor:
             return []
         return list(map(build_field, self.definition["seq"]))
 
+    # {'id': 'body', 'type': 'body', 'if': 'msg_type == [0x19, 0x0b]'}]
     def _collect_type_fields(self, type_name: str) -> []:
         def build_field(item):
             return {
@@ -26,6 +28,7 @@ class FieldExtractor:
                 "type": item["type"] if "type" in item else None,
                 "size": item["size"] if "size" in item else None,
                 "contents": item["contents"] if "contents" in item else None,
+                "if": item["if"] if "if" in item else None,
                 "path": [type_name]
             }
         return list(map(build_field, self.definition["types"][type_name]["seq"]))
@@ -51,6 +54,7 @@ class FieldExtractor:
                 "contents": instance["contents"] if "contents" in instance else None,
                 "pos": instance["pos"] if "pos" in instance else None,
                 "value": instance["value"] if "value" in instance else None,
+                # "if": instance["if"] if "if" in instance else None,
                 "path": []
             })
         return fields

@@ -34,14 +34,31 @@ def is_primitive(field):
     if "contents" in field and field["contents"] != None:
         return True
 
-    if field["type"] is None and field["value"] != None:
+    if field["type"] is None and "value" in field and field["value"] != None:
         return True
 
     return False
 
-def get_wireshark_type(value):
-    
+class UnsupportedConditional(Exception):
+    pass
 
+def get_conditional(field):
+    tokens = field.strip().split(" ")
+    tokens = [tokens[0], tokens[1], " ".join(tokens[2:])]
+    if_field,if_operator,if_value = tokens
+
+    if if_operator == "!=":
+        if_operator = "~="
+
+    if '[' in if_value:
+        if_value = eval(if_value) # lol
+        if_value = bytes(if_value).hex().upper()
+    else:
+        raise UnsupportedConditional()
+
+    return if_field,if_operator,if_value
+
+def get_wireshark_type(value):
     if value in TYPES:
         return TYPES[value]
     elif value == None:
@@ -70,7 +87,7 @@ def calculate_size(field):
             return field["size"]
         else:
             return "values[\"" + field["size"] + "\"]"
-    
+
 
     if "contents" in field and field["contents"] != None:
         return len(field["contents"])
